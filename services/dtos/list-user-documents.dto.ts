@@ -1,0 +1,58 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { DocumentType } from '@/app/document/interfaces/document-types.interfaces';
+import { ListBase } from '@/infra/base/interfaces/pagination.interfaces';
+import { Exclude } from 'class-transformer';
+
+export class ListUserDocumentsDto extends ListBase {
+  @ApiPropertyOptional({
+    description: 'Tipo do documento',
+    example: DocumentType.IDENTITY,
+    enum: DocumentType,
+  })
+  @IsOptional()
+  @IsString({ message: 'O tipo do documento deve ser uma string.' })
+  type?: DocumentType;
+
+  @ApiPropertyOptional({
+    description: 'Número do documento',
+    example: '12345678910',
+  })
+  @IsOptional()
+  @IsString({ message: 'O número do documento deve ser uma string.' })
+  number?: string;
+
+  @ApiPropertyOptional({
+    description: 'ID do produto associado ao documento',
+    example: '4d4b3b2b-3b2b-4b3b-2b3b-4b3b2b3b4b3b',
+  })
+  @IsOptional()
+  @IsString({
+    message: 'O ID do produto associado ao documento deve ser uma string.',
+  })
+  @IsUUID(4, {
+    message: 'O ID do produto associado ao documento deve ser um UUIDv4.',
+  })
+  productId?: string;
+
+  @ApiPropertyOptional({
+    description: 'ID do pedido associado ao documento',
+    example: '4d4b3b2b-3b2b-4b3b-2b3b-4b3b2b3b4b3b',
+  })
+  @IsOptional()
+  @IsString({
+    message: 'O ID do pedido associado ao documento deve ser uma string.',
+  })
+  @IsUUID(4, {
+    message: 'O ID do pedido associado ao documento deve ser um UUIDv4.',
+  })
+  orderId?: string;
+
+  @Exclude()
+  userId?: string;
+
+  forUser(userId: string) {
+    this.userId = userId;
+    return this;
+  }
+}
